@@ -1,6 +1,7 @@
 import Button from "@restart/ui/esm/Button";
 import React, { useReducer, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Col, Container, Form, Row, Table } from "react-bootstrap";
+import styled from "styled-components";
 
 const Player = () => {
   const [win, setWin]= useState(0)
@@ -8,7 +9,6 @@ const Player = () => {
   const [tie, setTie]= useState(0)
 
   const playReducer = (state , action) => {
-
     switch(action.type){
       case "ROCK":
         return 'rock'
@@ -21,10 +21,8 @@ const Player = () => {
       default:
         return state
     }
-
   }
   const CPUplayReducer = (state , action) => {
-
     switch(action.type){
       case "ROCK":
         return 'rock'
@@ -37,26 +35,20 @@ const Player = () => {
       default:
         return state
     }
-
   }
-
-
 
   const [play, dispatch] = useReducer(playReducer, '')
   const [CPUplay, CPUdispatch] = useReducer(CPUplayReducer, '')
 
-
-
   const renderCPUPlay = () => {
-    const arr = ["ROCK", "PAPER", "SCISSOR"]
     const randomNum = () => {
-      return Math.floor(Math.random() * 4)
+      return Math.floor(Math.random() * 3)
     }
-    if(randomNum() === 3){
+    if(randomNum() === 0){
       return "ROCK"
     }else if(randomNum() === 2){
       return "SCISSOR"
-    }else if(randomNum() === 1){
+    }else{
       return "PAPER"
     }
   }
@@ -75,6 +67,7 @@ const Player = () => {
     e.preventDefault()
     console.log(play)
     console.log(CPUplay)
+
     if(play === CPUplay){
       setTie(tie + 1)
     }
@@ -101,30 +94,31 @@ const Player = () => {
     CPUdispatch({type: 'RESET'})
   }
   
-
-
   return ( 
     <Form onSubmit={handleSubmit}>
-      <div>
-        <h1>Player</h1>
-        <Button onClick={()=> dispatch({type: "ROCK"})}>Rock</Button>
-        <Button onClick={()=> dispatch({type: "PAPER"})}>Paper</Button>
-        <Button onClick={()=> dispatch({type: "SCISSOR"})}>Scissors</Button>
-        {play && <h1>{play}</h1>}
-      </div>
-      <div>
+        <div onClick={()=> CPUdispatch({type: renderCPUPlay()})}>
+          <h1>Player</h1>
+          <Button onClick={()=> dispatch({type: "ROCK"})}>Rock</Button>
+          <Button onClick={()=> dispatch({type: "PAPER"})}>Paper</Button>
+          <Button onClick={()=> dispatch({type: "SCISSOR"})}>Scissors</Button>
+          {play && <h1>Player Choice: ---- {play} ----</h1>}
+        </div>
       <h1>Cpu</h1>
-        {play && <Button onClick={()=> CPUdispatch({type: renderCPUPlay()})}>CPU Play</Button>}
-        {CPUplay && <h1>{CPUplay}</h1>}
-      </div>
+        {CPUplay && <h1>Computer Choice:---- {CPUplay} ----</h1>}
+      <MyContainer>
       <div>
-        <Button type={'submit'}>Submit</Button>
+        <Button type={'submit'}>Save Score</Button>
       </div>
       <div>
         {renderScore()}
       </div>
+      </MyContainer>
     </Form>
   )
 }
+
+const MyContainer = styled(Container)`
+  text-align: center;
+`
 
 export default Player
